@@ -1,0 +1,19 @@
+{
+  "name": "evernote-md",
+  "version": "1.0.0",
+  "description": "Migrate Evernote notes to GitHub",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "entities": "^1.1.1",
+    "evernote": "^2.0.1-beta",
+    "github-api": "^3.0.0",
+    "libxmljs": "^0.18.4",
+    "rxjs": "^5.1.0",
+    "underscore": "^1.8.3"
+  },
+  "engines": {
+    "node": ">= 6"
+  }
+}
