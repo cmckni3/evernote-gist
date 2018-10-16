@@ -28,7 +28,7 @@ note_store.listNotebooks().then(notebooks => {
   const resultSpec = { includeTitle: true };
   return note_store.findNotesMetadata(filter, 0, 250, resultSpec)
     .then(({notes}) => {
-      noteResultSpec = { includeContent: true };
+      noteResultSpec = { includeContent: true, includeResourcesData: true };
       return Promise.all(
         notes.map(note => {
           return note_store.getNoteWithResultSpec(note.guid, noteResultSpec)
@@ -54,16 +54,33 @@ note_store.listNotebooks().then(notebooks => {
           title = `${title}-${duplicateCount + 1}`;
         }
         titles.push(title);
-        const markdown = enml.toMarkdown(note.content, true);
+        let resources = {};
+        if (note.resources.length > 0) {
+          notes.resources.forEach(resource => {
+            const image = resource.data.body;
+            const md5 = resource.data.bodyHash.toString();
+            const mimeType = resource.mime;
+            const base64Image = `data:${mimeType};base64,${image.toString('base64')}`;
+
+            resources[md5] = base64Image;
+          });
+        }
+        const markdown = enml.toMarkdown(note.content);
+
+        if (title.indexOf('Mocha') >= 0) {
+          console.log(markdown);
+        }
+
         gist_content.files[`${title}.md`] = { content: markdown };
       });
 
-      return gist.create(gist_content);
+      // return gist.create(gist_content);
+      return Promise.resolve();
     })
     .catch(err => {
       return Promise.reject(err);
     });
 })
 .catch(err => {
-  console.log(err);
+  console.error(err);
 });
